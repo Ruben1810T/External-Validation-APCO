@@ -61,7 +61,7 @@ Reproducing and improving one-dimensional convolutional neural networks for arte
 
 ---
 
-## Datasets
+## Dataset
 
 A pseudonymized dataset from MST containing 140 surgical patients under general anesthesia was used. It included demographic information and vital signs, including arterial pressure waveforms. Reference SV measurements were obtained using FloTrac (version 2.3 and higher).
 
@@ -84,3 +84,15 @@ Variable Name     | Data Type   | Shape of data | Description
 `$VERSION$` indicates the version of dataset, which for convenience of dataset management <br/>
 Default value of `$VERSION$` is `200101` of `yymmdd` format. <br/>
 
+* ```preprocessing.ipynb```
+  * ```laad_vital```: Loads data from the vital monitor.
+  * ```laad_hemosphere```: Loads data from the hemosphere monitor.
+  * ```resample_abp```: Resamples arterial pressure wave data from 125 to 100 Hz.
+  * ```koppel_abp_sv```: Links ABP segments to SV.
+  * ```lowess_smoothing```: Definition of the LOWESS filter, made by van Mierlo et al..
+  * ```lowess_sv```: Performs LOWESS smoothing.
+  * ```filter_fysiologisch```: Detects and removes ABP values <25 or >250 mmHg and SV values <20 or >200 mL.
+  * ```detect_unrealistic_segment```: Detects unrealistic segments where the ABP rises or drops >25 mmHg.
+  * ```filter_ruis```: Removes the unrealistic segments.
+  * ```filter_hartslag```: Detects HR values <30 or >180 beats/min.
+  * ```filter_pulse_pressure```: Detects pulse pressure values
