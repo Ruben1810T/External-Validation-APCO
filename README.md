@@ -93,6 +93,8 @@ Each patient requires a `_vital` and a `_hs` folder. The script automatically pa
 
 ```
 DATA_PATH/
+├── demographics.csv
+│
 ├── patient01_vital/
 │   └── vital.csv
 ├── patient01_hs/
