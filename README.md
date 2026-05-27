@@ -65,34 +65,106 @@ Reproducing and improving one-dimensional convolutional neural networks for arte
 
 A pseudonymized dataset from MST containing 140 surgical patients under general anesthesia was used. It included demographic information and vital signs, including arterial pressure waveforms. Reference SV measurements were obtained using FloTrac (version 2.3 and higher).
 
-## File preparations
+## Requirements
 
+```
+numpy
+pandas
+matplotlib
+scipy
+statsmodels
+pyvital
+tqdm
+```
 
 ---
 
 ## Project structure
 
-Dataset must be named and shaped as follows: <br/>
+### Data arrays
 
-Variable Name     | Data Type   | Shape of data | Description
-------------------|-------------|---------------|------------
-`np_w_$VERSION$`  | Numpy array | (batch, 2000) | abp wave data with 20 second segment
-`np_sv_$VERSION$` | Numpy array | (batch, )     | target stroke volume data
-`np_a_$VERSION$`  | Numpy array | (batch, 4)    | demographic data with order of age, sex, weight, height
-`np_c_$VERSION$`  | Numpy array | (batch, )     | chart names of each data point (it is used to split validation set)
+The dataset must be named and shaped as follows:
+ 
+| Variable Name | Data Type | Shape | Description |
+|---|---|---|---|
+| `np_w_$VERSION$` | Numpy array | `(batch, 2000)` | ABP waveform data, 20-second segments |
+| `np_sv_$VERSION$` | Numpy array | `(batch,)` | Target stroke volume |
+| `np_a_$VERSION$` | Numpy array | `(batch, 4)` | Demographic data: age, sex, weight, height |
+| `np_c_$VERSION$` | Numpy array | `(batch,)` | Patient identifiers (used for validation splitting) |
+ 
+`$VERSION$` indicates the dataset version in `yymmdd` format. Default: `200101`.
 
-`$VERSION$` indicates the version of dataset, which for convenience of dataset management <br/>
-Default value of `$VERSION$` is `200101` of `yymmdd` format. <br/>
+### Folder structure
 
-* ```preprocessing.ipynb```
-  * ```laad_vital```: Loads data from the vital monitor.
-  * ```laad_hemosphere```: Loads data from the hemosphere monitor.
-  * ```resample_abp```: Resamples arterial pressure wave data from 125 to 100 Hz.
-  * ```koppel_abp_sv```: Links ABP segments to SV.
-  * ```lowess_smoothing```: Definition of the LOWESS filter, made by van Mierlo et al..
-  * ```lowess_sv```: Performs LOWESS smoothing.
-  * ```filter_fysiologisch```: Detects and removes ABP values <25 or >250 mmHg and SV values <20 or >200 mL.
-  * ```detect_unrealistic_segment```: Detects unrealistic segments where the ABP rises or drops >25 mmHg.
-  * ```filter_ruis```: Removes the unrealistic segments.
-  * ```filter_hartslag```: Detects HR values <30 or >180 beats/min.
-  * ```filter_pulse_pressure```: Detects pulse pressure values
+Data is loaded automatically based on the following folder structure:
+
+```
+DATA_PATH/
+├── patient01_vital/
+│   └── vital.csv
+├── patient01_hs/
+│   └── hemosphere.csv
+├── patient02_vital/
+│   └── vital.csv
+├── patient02_hs/
+│   └── hemosphere.csv
+└── ...
+```
+Each patient requires a `_vital` and a `_hs` folder. The script automatically pairs them based on the patient ID (the folder name without suffix).
+
+---
+
+## Preprocessing
+
+* ```load_vital```: Reads data from the vital monitor.
+* ```load_hemosphere```: Reads data from the hemosphere monitor.
+* ```resample_abp```: Extracts the ABP signal and resamples it from 125 to 100 Hz using pyvital.
+* ```link_abp_sv```: Matches each SV measurement to the 20-second ABP segment that preceeded it.
+* ```lowess_smoothing```: Definition of the LOWESS filter, made by van Mierlo et al..
+* ```lowess_sv```: Performs LOWESS smoothing.
+* ```filter_physiological```: Removes segments where ABP values are <25 or >250 mmHg or where SV values are <20 or >200 mL.
+* ```detect_unrealistic_segment```: Detects unrealistic segments with unrealistically large jumps from >25 mmHg.
+* ```filter_noise```: Removes segments with unrealistically large jumps (>25 mmHg).
+* ```filter_extra_peaks```: Removes segments that contain more praks than expected for the detected number of heartbeats.
+* ```filter_heartrate```: Removes segments where the HR is <30 or >180 bpm.
+* ```filter_pulse_pressure```: Removes segments where the mean pulse pressure is <20 mmHg
+* ```delete_segments```: Applies the collected removal mask to all arrays.
+* ```process_patient```: Runs the full pipeline for one patient.
+
+---
+ 
+## Configuration
+ 
+Settings are loaded from a `vars.env` file in the project directory. Create this file based on the example below:
+ 
+```env
+# Paths
+DATA_PATH=path/to/data
+ 
+# Signal
+SAMPLE_LENGTH=2000
+SAMPLING_RATE=100
+ 
+# Filtering
+FILTER_RUIS=True
+FILTER_EXTRA_PEAKS=True
+FILTER_HR=True
+FILTER_PP=True
+ 
+# Visualisation
+TOON_PLOT_KOPPELING=False
+TOON_PLOT_HR=False
+TOON_PLOT_PP=False
+TOON_PLOT_EXTRA_PEAKS=False
+TOON_EIND_PLOT=False
+```
+ 
+| Variable | Description |
+|---|---|
+| `DATA_PATH` | Path to the directory containing patient folders |
+| `SAMPLE_LENGTH` | ABP segment length in samples (2000 = 20 s at 100 Hz) |
+| `SAMPLING_RATE` | Sampling rate in Hz |
+| `FILTER_*` | Enable or disable individual filter steps |
+| `TOON_PLOT_*` | Enable or disable visualisations per step |
+
+---
