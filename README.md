@@ -180,9 +180,9 @@ NPY_SAVE = True
 | `FILTER_*` | Enable or disable individual filter steps |
 | `PLOT_*` | Enable or disable visualisations per step |
 
----
+Plots can be enabled or disabled via this 'vars.env' configuration file. 
 
-Plots can be enabled or disabled via this 'vars.env' configuration file.
+---
 
 ## Notes
 
