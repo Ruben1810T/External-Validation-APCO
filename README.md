@@ -65,6 +65,10 @@ Reproducing and improving one-dimensional convolutional neural networks for arte
 
 A pseudonymized dataset from MST containing 140 surgical patients under general anesthesia was used. It included demographic information and vital signs, including arterial pressure waveforms. Reference SV measurements were obtained using FloTrac (version 2.3 and higher).
 
+Two different monitor data sources are used throughout the code: vital monitor data and Hemosphere monitor data. These datasets differ in structure and duration. The vital data contains ... and the Hemosphere data contains ... The Hemosphere data generally spans a longer time period than the vital data. 
+
+The preprocessing steps and data loading are specifically adapted to the monitoring systems and data formats used at MST, including MARTINI and Philips IntelliVue. As a result, parts of the code, such as file paths and time handling, are specific to the MST setup. Because of this, adjustments may be required before using the code with data from other hospitals or monitoring systems. 
+
 ## Requirements
 
 ```
@@ -96,7 +100,7 @@ The dataset must be named and shaped as follows:
 
 ### Folder structure
 
-Data is loaded automatically based on the following folder structure:
+Each patient requires a `_vital` and a `_hs` folder. The script automatically pairs them based on the patient ID. Data is loaded automatically based on the following folder structure:
 
 ```
 DATA_PATH/
@@ -110,7 +114,10 @@ DATA_PATH/
 │   └── hemosphere.csv
 └── ...
 ```
-Each patient requires a `_vital` and a `_hs` folder. The script automatically pairs them based on the patient ID.
+
+Processed `.npy` files are stored in a separate directory for each patient, where the folder name corresponds to the patient number.
+
+# hier ook datapath???
 
 ---
 
@@ -120,16 +127,18 @@ Each patient requires a `_vital` and a `_hs` folder. The script automatically pa
 * ```load_hemosphere```: Reads data from the hemosphere monitor.
 * ```resample_abp```: Extracts the ABP signal and resamples it from 125 to 100 Hz using pyvital.
 * ```link_abp_sv```: Matches each SV measurement to the 20-second ABP segment that preceeded it.
-* ```lowess_smoothing```: Definition of the LOWESS filter, made by van Mierlo et al..
-* ```lowess_sv```: Performs LOWESS smoothing.
+* ```lowess_smoothing```: LOWESS smoothing filter implementation adapted from van Mierlo et al.
+* ```lowess_sv```: Applies the LOWESS smoothing to the SV signal.
 * ```filter_physiological```: Removes segments where ABP values are <25 or >250 mmHg or where SV values are <20 or >200 mL.
 * ```detect_unrealistic_segment```: Detects unrealistic segments with unrealistically large jumps from >25 mmHg.
 * ```filter_noise```: Removes segments with unrealistically large jumps (>25 mmHg).
-* ```filter_extra_peaks```: Removes segments that contain more praks than expected for the detected number of heartbeats.
+* ```filter_extra_peaks```: Removes segments that contain more peaks than expected for the detected number of heartbeats. Uses a peak prominence threshold of 2 mmHg and a heartbeat factor threshold of 1.2.
 * ```filter_heartrate```: Removes segments where the HR is <30 or >180 bpm.
 * ```filter_pulse_pressure```: Removes segments where the mean pulse pressure is <20 mmHg
 * ```delete_segments```: Applies the collected removal mask to all arrays.
 * ```process_patient```: Runs the full pipeline for one patient.
+
+In preprocessing, the filtering strategy introduced by van Mierlo et al. is used and extended with additional filtering steps developed for the MST external validation. 
 
 ---
  
@@ -157,6 +166,12 @@ PLOT_HR=False
 PLOT_PP=False
 PLOT_EXTRA_PEAKS=False
 PLOT_FINAL=False
+
+# Save as npy files
+NPY_SAVE = True
+
+Plots can be enabled or disabled via this 'vars.env' configuration file.
+
 ```
  
 | Variable | Description |
@@ -168,3 +183,7 @@ PLOT_FINAL=False
 | `PLOT_*` | Enable or disable visualisations per step |
 
 ---
+
+## Notes
+
+- Filtering of unrealistic waveform segments is currently mainly based on the `max_step` criterion.
