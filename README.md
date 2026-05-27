@@ -132,6 +132,7 @@ Processed `.npy` files are stored in a separate directory for each patient, wher
 * ```filter_heartrate```: Removes segments where the HR is <30 or >180 bpm.
 * ```filter_pulse_pressure```: Removes segments where the mean pulse pressure is <20 mmHg
 * ```delete_segments```: Applies the collected removal mask to all arrays.
+* ```save_data```: Saves the data to .npy files. 
 * ```process_patient```: Runs the full pipeline for one patient.
 
 In preprocessing, the filtering strategy introduced by van Mierlo et al. is used and extended with additional filtering steps developed for the MST external validation. 
