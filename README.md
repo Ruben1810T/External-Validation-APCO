@@ -65,7 +65,7 @@ Reproducing and improving one-dimensional convolutional neural networks for arte
 
 A pseudonymized dataset from MST containing 140 surgical patients under general anesthesia was used. It included demographic information and vital signs, including arterial pressure waveforms. Reference SV measurements were obtained using FloTrac (version 2.3 and higher).
 
-Two different monitor data sources are used throughout the code: vital monitor data and Hemosphere monitor data. These datasets differ in structure and duration. The vital data contains ... and the Hemosphere data contains ... The Hemosphere data generally spans a longer time period than the vital data. 
+Two different monitor data sources are used throughout the code: vital monitor data and Hemosphere monitor data. These datasets differ in structure and duration. The vital data contains ABP and the Hemosphere data contains stroke volume The Hemosphere data generally spans a longer time period than the vital data. 
 
 The preprocessing steps and data loading are specifically adapted to the monitoring systems and data formats used at MST, including MARTINI and Philips IntelliVue. As a result, parts of the code, such as file paths and time handling, are specific to the MST setup. Because of this, adjustments may be required before using the code with data from other hospitals or monitoring systems. 
 
@@ -85,19 +85,6 @@ tqdm
 
 ## Project structure
 
-### Data arrays
-
-The dataset must be named and shaped as follows:
- 
-| Variable Name | Data Type | Shape | Description |
-|---|---|---|---|
-| `np_w_$VERSION$` | Numpy array | `(batch, 2000)` | ABP waveform data, 20-second segments |
-| `np_sv_$VERSION$` | Numpy array | `(batch,)` | Target stroke volume |
-| `np_a_$VERSION$` | Numpy array | `(batch, 4)` | Demographic data: age, sex, weight, height |
-| `np_c_$VERSION$` | Numpy array | `(batch,)` | Patient identifiers (used for validation splitting) |
- 
-`$VERSION$` indicates the dataset version in `yymmdd` format. Default: `200101`.
-
 ### Folder structure
 
 Each patient requires a `_vital` and a `_hs` folder. The script automatically pairs them based on the patient ID. Data is loaded automatically based on the following folder structure:
@@ -115,9 +102,18 @@ DATA_PATH/
 └── ...
 ```
 
-Processed `.npy` files are stored in a separate directory for each patient, where the folder name corresponds to the patient number.
+### Data arrays
 
-# hier ook datapath???
+Processed `.npy` files are stored in a separate directory for each patient, where the folder name corresponds to the patient number. The dataset must be named and shaped as follows:
+ 
+| Variable Name | Data Type | Shape | Description |
+|---|---|---|---|
+| `np_w_$VERSION$` | Numpy array | `(batch, 2000)` | ABP waveform data, 20-second segments |
+| `np_sv_$VERSION$` | Numpy array | `(batch,)` | Target stroke volume |
+| `np_a_$VERSION$` | Numpy array | `(batch, 4)` | Demographic data: age, sex, weight, height |
+| `np_c_$VERSION$` | Numpy array | `(batch,)` | Patient identifiers (used for validation splitting) |
+ 
+`$VERSION$` indicates the dataset version in `yymmdd` format. Default: `200101`.
 
 ---
 
@@ -168,7 +164,7 @@ PLOT_EXTRA_PEAKS=False
 PLOT_FINAL=False
 
 # Save as npy files
-NPY_SAVE = True
+NPY_SAVE=True
 
 ```
  
@@ -179,11 +175,8 @@ NPY_SAVE = True
 | `SAMPLING_RATE` | Sampling rate in Hz |
 | `FILTER_*` | Enable or disable individual filter steps |
 | `PLOT_*` | Enable or disable visualisations per step |
+| `NPY_SAVE*` | Enable or disable saving .npy files  |
 
 Plots can be enabled or disabled via this 'vars.env' configuration file. 
 
 ---
-
-## Notes
-
-- Filtering of unrealistic waveform segments is currently mainly based on the `max_step` criterion.
