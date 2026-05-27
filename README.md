@@ -110,7 +110,7 @@ DATA_PATH/
 │   └── hemosphere.csv
 └── ...
 ```
-Each patient requires a `_vital` and a `_hs` folder. The script automatically pairs them based on the patient ID (the folder name without suffix).
+Each patient requires a `_vital` and a `_hs` folder. The script automatically pairs them based on the patient ID.
 
 ---
 
@@ -143,20 +143,20 @@ DATA_PATH=path/to/data
  
 # Signal
 SAMPLE_LENGTH=2000
-SAMPLING_RATE=100
+SAMPLING_RATE=0.01
  
 # Filtering
-FILTER_RUIS=True
+FILTER_NOISE=True
 FILTER_EXTRA_PEAKS=True
 FILTER_HR=True
 FILTER_PP=True
  
 # Visualisation
-TOON_PLOT_KOPPELING=False
-TOON_PLOT_HR=False
-TOON_PLOT_PP=False
-TOON_PLOT_EXTRA_PEAKS=False
-TOON_EIND_PLOT=False
+PLOT_LINKING=False
+PLOT_HR=False
+PLOT_PP=False
+PLOT_EXTRA_PEAKS=False
+PLOT_FINAL=False
 ```
  
 | Variable | Description |
@@ -165,6 +165,6 @@ TOON_EIND_PLOT=False
 | `SAMPLE_LENGTH` | ABP segment length in samples (2000 = 20 s at 100 Hz) |
 | `SAMPLING_RATE` | Sampling rate in Hz |
 | `FILTER_*` | Enable or disable individual filter steps |
-| `TOON_PLOT_*` | Enable or disable visualisations per step |
+| `PLOT_*` | Enable or disable visualisations per step |
 
 ---
