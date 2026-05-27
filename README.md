@@ -171,7 +171,6 @@ PLOT_FINAL=False
 NPY_SAVE = True
 
 ```
-Plots can be enabled or disabled via this 'vars.env' configuration file.
  
 | Variable | Description |
 |---|---|
@@ -182,6 +181,8 @@ Plots can be enabled or disabled via this 'vars.env' configuration file.
 | `PLOT_*` | Enable or disable visualisations per step |
 
 ---
+
+Plots can be enabled or disabled via this 'vars.env' configuration file.
 
 ## Notes
 
