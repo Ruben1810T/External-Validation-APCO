@@ -111,7 +111,7 @@ Processed `.npy` files are stored in a separate directory for each patient, wher
 | `np_w_$VERSION$` | Numpy array | `(batch, 2000)` | ABP waveform data, 20-second segments |
 | `np_sv_$VERSION$` | Numpy array | `(batch,)` | Target stroke volume |
 | `np_a_$VERSION$` | Numpy array | `(batch, 4)` | Demographic data: age, sex, weight, height |
-| `np_c_$VERSION$` | Numpy array | `(batch,)` | Patient identifiers (used for validation splitting) |
+| `np_c_$VERSION$` | Numpy array | `(batch,)` | Patient identifiers |
  
 `$VERSION$` indicates the dataset version in `yymmdd` format. Default: `200101`.
 
