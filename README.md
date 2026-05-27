@@ -170,9 +170,8 @@ PLOT_FINAL=False
 # Save as npy files
 NPY_SAVE = True
 
-Plots can be enabled or disabled via this 'vars.env' configuration file.
-
 ```
+Plots can be enabled or disabled via this 'vars.env' configuration file.
  
 | Variable | Description |
 |---|---|
