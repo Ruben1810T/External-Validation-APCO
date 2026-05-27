@@ -79,6 +79,8 @@ scipy
 statsmodels
 pyvital
 tqdm
+dotenv
+os
 ```
 
 ---
