@@ -175,7 +175,7 @@ NPY_SAVE=True
 | `SAMPLING_RATE` | Sampling rate in Hz |
 | `FILTER_*` | Enable or disable individual filter steps |
 | `PLOT_*` | Enable or disable visualisations per step |
-| `NPY_SAVE*` | Enable or disable saving .npy files  |
+| `NPY_SAVE` | Enable or disable saving .npy files  |
 
 Plots can be enabled or disabled via this 'vars.env' configuration file. 
 
