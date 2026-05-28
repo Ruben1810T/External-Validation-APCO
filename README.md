@@ -1,4 +1,4 @@
-# Extern validation of APCONet: a 1d CNN model for estimating cardiac output based on arterial pressure waveform
+# External validation of APCONet: a 1d CNN model for estimating cardiac output based on arterial pressure waveform
 APCONet is an open-source machine learning model developed by Yang et al., trained on data from surgical patients at Seoul National University Hospital (SNUH). It estimates stroke volume (SV) from 100 Hz, 20-second arterial pressure waveform segments combined with demographic data (age, height, weight, and sex). SV is used to calculate cardiac output by multiplying it with heartrate. This model was further improved by van Mierlo et al. and is used here for external validation on patients from Medisch Spectrum Twente (MST).
 
 > Author: [Hyun-Lim Yang](https://sites.google.com/view/hyunlim-yang) 
