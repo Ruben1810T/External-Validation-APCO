@@ -1,5 +1,5 @@
 # External validation of APCONet: a 1d CNN model for estimating cardiac output based on arterial pressure waveform
-APCONet is an open-source machine learning model developed by Yang et al., trained on data from surgical patients at Seoul National University Hospital (SNUH). It estimates stroke volume (SV) from 100 Hz, 20-second arterial pressure waveform segments combined with demographic data (age, height, weight, and sex). SV is used to calculate cardiac output by multiplying it with heartrate. This model was further improved by Van Mierlo et al. and is used here for external validation on patients from Medisch Spectrum Twente (MST).
+APCONet is an open-source machine learning model developed by Yang et al., trained on data from surgical patients at Seoul National University Hospital (SNUH). It estimates stroke volume (SV) from 100 Hz, 20-second arterial pressure waveform segments combined with demographic data (age, height, weight, and sex). SV is used to calculate cardiac output (CO) by multiplying it with heartrate. This model was further improved by Van Mierlo et al. and is used here for external validation on patients from Medisch Spectrum Twente (MST). After external validation, the model was fine-tuned on the MST dataset and compared to 
 
 > Author: [Hyun-Lim Yang](https://sites.google.com/view/hyunlim-yang) 
 ([VitalLab](https://vitallab.ai/), SNUH, South Korea) <br/>
@@ -66,7 +66,10 @@ A pseudonymized dataset from MST containing 94 surgical patients under general a
 
 The preprocessing steps and data loading were specifically adapted to the monitoring systems and data formats used at MST (MARTINI and Philips IntelliVue), including specific file paths and time handling. Because of this, adjustments may be required before using the code with data from other hospitals or monitoring systems. 
 
+---
+
 ## Requirements
+Python 3.11.8 was used. 
 
 ```
 numpy
@@ -80,6 +83,11 @@ dotenv
 os
 ```
 
+Install all dependencies with:
+ 
+```bash
+pip install -r requirements.txt
+```
 ---
 
 ## Project structure
@@ -117,29 +125,9 @@ Processed `.npy` files are stored in a separate directory for each patient, wher
 `$VERSION$` indicates the dataset version in `yymmdd` format. Default: `200101`.
 
 ---
-
-## Preprocessing
-
-The preprocessing steps are based on the filtering strategy introduced by Van Mierlo et al. 
-
-* ```load_vital```: Reads data from the vital monitor.
-* ```load_hemosphere```: Reads data from the hemosphere monitor.
-* ```resample_abp```: Extracts the ABP signal and resamples it from 125 to 100 Hz using pyvital.
-* ```link_abp_sv```: Matches each SV measurement to the 20-second ABP segment that preceeded it.
-* ```lowess_smoothing```: LOWESS smoothing filter implementation adapted from Van Mierlo et al.
-* ```lowess_sv```: Applies the LOWESS smoothing to the SV signal.
-* ```filter_physiological```: Removes segments where ABP values are <25 or >250 mmHg or where SV values are <20 or >200 mL.
-* ```filter_heartrate```: Removes segments where the HR is <30 or >180 bpm.
-* ```filter_pulse_pressure```: Removes segments where the mean pulse pressure is <20 mmHg
-* ```delete_segments```: Applies the collected removal mask to all arrays.
-* ```save_data```: Saves the data to .npy files. 
-* ```process_patient```: Runs the full pipeline for one patient.
-
----
- 
 ## Configuration
  
-Settings are loaded from a `vars.env` file in the project directory. Create this file based on the example below:
+Settings are loaded from a `vars.env` file in the project directory. Create this file based on the structure below: 
  
 ```env
 # Paths
@@ -168,9 +156,68 @@ NPY_SAVE=True
 |---|---|
 | `DATA_PATH` | Path to the directory containing patient folders |
 | `SAMPLE_LENGTH` | ABP segment length in samples (2000 = 20 s at 100 Hz) |
-| `SAMPLING_RATE` | Sampling rate in Hz |
+| `SAMPLING_RATE` | Sampling interval in seconds (0.01 = 100 Hz) |
 | `FILTER_*` | Enable or disable individual filter steps |
 | `PLOT_*` | Enable or disable visualisations per step |
 | `NPY_SAVE` | Enable or disable saving .npy files  |
+
+---
+
+## Preprocessing
+
+The preprocessing steps are based on the filtering strategy introduced by Van Mierlo et al. and can be found in `preprocessing.ipynb`. The variables are explained below.
+
+* ```load_vital```: Reads data from the vital monitor.
+* ```load_hemosphere```: Reads data from the hemosphere monitor.
+* ```resample_abp```: Extracts the ABP signal and resamples it from 125 to 100 Hz using pyvital.
+* ```link_abp_sv```: Matches each SV measurement to the 20-second ABP segment that preceded it.
+* ```lowess_smoothing```: LOWESS smoothing filter implementation adapted from Van Mierlo et al.
+* ```lowess_sv```: Applies the LOWESS smoothing to the SV signal.
+* ```filter_physiological```: Removes segments where ABP values are <25 or >250 mmHg or where SV values are <20 or >200 mL.
+* ```filter_heartrate```: Removes segments where the HR is <30 or >180 bpm.
+* ```filter_pulse_pressure```: Removes segments where the mean pulse pressure is <20 mmHg
+* ```delete_segments```: Applies the collected removal mask to all arrays.
+* ```save_data```: Saves the data to .npy files. 
+* ```process_patient```: Runs the full pipeline for one patient.
+
+---
+
+## Statistical analysis
+
+The statistical analysis of patient demographics is performed in `statistical_analysis.ipynb`. The notebook includes the following steps:
+
+* **Normality testing**: Visual assessment through Q-Q plots, histograms, and box plots to assess the distribution of demographic variables (age, height, weight).
+* **Descriptive statistics**: Summary table of demographic characteristics for the full dataset and per subset (train, validation, test).
+* **Mann-Whitney U test**: Used to compare continuous variables (age, height, weight) between subsets.
+* **Pearson chi-squared test**: Used to compare categorical variables (sex) between subsets.
+
+---
+
+## APCONet model
+The model created by Yang et al. was used for external validation. This model can be downloaded via the [APCONet repository](https://github.com/hyunlimy/APCONet). After external validation, the model was further finetuned on the MST dataset. The finetuned model can be found in this repository under `NAAM MODEL`.
+
+The model performance is assessed using the following measures:
+
+* **ME and MAE**: Mean error and mean absolute error (mL) to assess bias and accuracy of SV estimates.
+* **MPE and MAPE**: Mean percentage error and mean absolute percentage error (%) to assess relative bias and accuracy.
+* **Pearson and Spearman correlation**: Correlation between APCONet SV estimates and FloTrac reference measurements.
+* **Bland-Altman analysis**: Agreement between APCONet and FloTrac over the full range of measurements, reported as bias and limits of agreement (±SD).
+* **Four-quadrant plot**: Trend analysis based on concordance rate of percentage changes in SV between APCONet and FloTrac. A concordance rate of >90% indicates reliable trending ability.
+
+---
+
+## Usage
+1. Set up the `vars.env` configuration file (see [Configuration](#configuration)).
+2. Place the patient data in the correct folder structure (see [Project structure](#project-structure)).
+4. Run the preprocessing pipeline in `preprocessing.ipynb` (see [Preprocessing](#preprocessing)).
+5. Check the normality via `statistical_analysis.ipynb` (see [Statistical analysis](#statistical-analysis)).
+6. Run the APCONet model (see [APCONet model](#apconet-model)). 
+ 
+> **Note:** Adjust file paths and time handling when using data from a different hospital or monitoring system.
+
+---
+
+## License
+This project is licensed under the MIT License. See `LICENSE` for details.
 
 ---
