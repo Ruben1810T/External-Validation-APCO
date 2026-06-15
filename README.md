@@ -62,7 +62,7 @@ Reproducing and improving one-dimensional convolutional neural networks for arte
 ---
 
 ## Dataset
-A pseudonymized dataset from MST containing 94 surgical patients under general anesthesia was used. Two types of monitor data sources were used throughout the code: vital monitor data and Hemosphere monitor data. These datasets differed in structure and duration. The vital data contains arterial blood pressure (ABP) data, recorded using the Philips DETT tool in combination with the VitalDB recorder. The Hemosphere data contained the SV reference measurements, obtained using the FloTrac sensor. The Hemosphere data generally spanned a longer time period than the vital data. The dataset also contained demographic information: age, sex, height and weight. Demographic characteristics, SV and ABP data were stored in separate CSV files for further processing.
+A pseudonymized dataset from MST containing 94 included surgical patients under general anesthesia was used. Two types of monitor data sources were used throughout the code: vital monitor data and Hemosphere monitor data. These datasets differed in structure and duration. The vital data contains arterial blood pressure (ABP) data and the Hemosphere data contained the SV reference measurements. The dataset also contained demographic information: age, sex, height and weight. Demographic characteristics, SV and ABP data were stored in separate CSV files for further processing.
 
 The preprocessing steps and data loading were specifically adapted to the monitoring systems and data formats used at MST (MARTINI and Philips IntelliVue), including specific file paths and time handling. Because of this, adjustments may be required before using the code with data from other hospitals or monitoring systems. 
 
@@ -156,7 +156,7 @@ NPY_SAVE=True
 |---|---|
 | `DATA_PATH` | Path to the directory containing patient folders |
 | `SAMPLE_LENGTH` | ABP segment length in samples (2000 = 20 s at 100 Hz) |
-| `SAMPLING_RATE` | Sampling interval in seconds (0.01 = 100 Hz) |
+| `SAMPLING_RATE` | Sampling interval in seconds (0.01 s = 100 Hz) |
 | `FILTER_*` | Enable or disable individual filter steps |
 | `PLOT_*` | Enable or disable visualisations per step |
 | `NPY_SAVE` | Enable or disable saving .npy files  |
@@ -169,7 +169,7 @@ The preprocessing steps are based on the filtering strategy introduced by Van Mi
 
 * ```load_vital```: Reads data from the vital monitor.
 * ```load_hemosphere```: Reads data from the hemosphere monitor.
-* ```resample_abp```: Extracts the ABP signal and resamples it from 125 to 100 Hz using pyvital.
+* ```resample_abp```: Extracts the ABP signal and resamples it to 100 Hz using pyvital.
 * ```link_abp_sv```: Matches each SV measurement to the 20-second ABP segment that preceded it.
 * ```lowess_smoothing```: LOWESS smoothing filter implementation adapted from Van Mierlo et al.
 * ```lowess_sv```: Applies the LOWESS smoothing to the SV signal.
@@ -194,7 +194,7 @@ The statistical analysis of patient demographics is performed in `statistical_an
 ---
 
 ## APCONet model
-The model created by Yang et al. was used for external validation. This model can be downloaded via the [APCONet repository](https://github.com/hyunlimy/APCONet). After external validation, the model was further finetuned on the MST dataset. The finetuned model can be found in this repository under `NAAM MODEL`.
+The model created by Yang et al. was used for external validation. This model was created with the code from Van Mierlo and can be downloaded via the [APCONet repository](https://github.com/Computational-Biology-TUe/APCONet). After external validation, the model was further finetuned on the MST dataset. The finetuned model can be found in this repository under `AF-07`.
 
 The model performance is assessed using the following measures:
 
