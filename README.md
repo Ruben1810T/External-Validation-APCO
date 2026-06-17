@@ -94,7 +94,7 @@ pip install -r requirements.txt
 
 ### Folder structure
 
-Each patient requires a `_vital` and a `_hs` folder. The script automatically pairs them based on the patient ID. Data is loaded automatically based on the following folder structure:
+The code requires a demographics, vital data and Hemosphere data folder. The script automatically pairs them based on the patient ID. Data is loaded automatically based on the following folder structure:
 
 ```
 project/
