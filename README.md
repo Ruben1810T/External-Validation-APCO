@@ -69,7 +69,7 @@ The preprocessing steps and data loading were specifically adapted to the monito
 ---
 
 ## Requirements
-Python 3.11.8 was used. 
+Python 3.11.8. was used. 
 
 ```
 numpy
@@ -97,18 +97,30 @@ pip install -r requirements.txt
 Each patient requires a `_vital` and a `_hs` folder. The script automatically pairs them based on the patient ID. Data is loaded automatically based on the following folder structure:
 
 ```
-DATA_PATH/
+project/
 ├── demographics.csv
 │
-├── patient01_vital/
-│   └── vital.csv
-├── patient01_hs/
-│   └── hemosphere.csv
-├── patient02_vital/
-│   └── vital.csv
-├── patient02_hs/
-│   └── hemosphere.csv
-└── ...
+├── vital data/
+│   ├── patient01_vital/
+│   │   └── patient01_vital.csv
+│   ├── patient02_vital/
+│   │   └── patient02_vital.csv
+│   ├── patient03_vital/
+│   │   └── patient03_vital.csv
+│   ├── ...
+│   └── patient94_vital/
+│       └── patient94_vital.csv
+│
+├── hemosphere data/
+│   ├── patient01_hs/
+│   │   └── patient01_hs.csv
+│   ├── patient02_hs/
+│   │   └── patient02_hs.csv
+│   ├── patient03_hs/
+│   │   └── patient03_hs.csv
+│   ├── ...
+│   └── patient94_hs/
+│       └── patient94_hs.csv
 ```
 
 ### Data arrays
@@ -132,6 +144,8 @@ Settings are loaded from a `vars.env` file in the project directory. Create this
 ```env
 # Paths
 DATA_PATH=path/to/data
+DEMOGRAPHICS=path/to/demographic/data
+STAT_PATH=?
  
 # Signal
 SAMPLE_LENGTH=2000
@@ -154,7 +168,9 @@ NPY_SAVE=True
  
 | Variable | Description |
 |---|---|
-| `DATA_PATH` | Path to the directory containing patient folders |
+| `DATA_PATH` | Path to the directory containing vital and Hemosphere data |
+| `DEMOGRAPHICS` | Path to the directory containing folders with demographic data |
+| `STAT_PATH` | ? |
 | `SAMPLE_LENGTH` | ABP segment length in samples (2000 = 20 s at 100 Hz) |
 | `SAMPLING_RATE` | Sampling interval in seconds (0.01 s = 100 Hz) |
 | `FILTER_*` | Enable or disable individual filter steps |
@@ -173,6 +189,8 @@ The preprocessing steps are based on the filtering strategy introduced by Van Mi
 * ```link_abp_sv```: Matches each SV measurement to the 20-second ABP segment that preceded it.
 * ```lowess_smoothing```: LOWESS smoothing filter implementation adapted from Van Mierlo et al.
 * ```lowess_sv```: Applies the LOWESS smoothing to the SV signal.
+* ```filter_begin```: Deletes first 10 minutes of the recording due to signal stabilization of the SV measurements.
+* ```filter_abp_dip```: Removes segments with NIBP measurements that disturb the ABP waveform. 
 * ```filter_physiological```: Removes segments where ABP values are <25 or >250 mmHg or where SV values are <20 or >200 mL.
 * ```filter_heartrate```: Removes segments where the HR is <30 or >180 bpm.
 * ```filter_pulse_pressure```: Removes segments where the mean pulse pressure is <20 mmHg
@@ -190,6 +208,8 @@ The statistical analysis of patient demographics is performed in `statistical_an
 * **Descriptive statistics**: Summary table of demographic characteristics for the full dataset and per subset (train, validation, test).
 * **Mann-Whitney U test**: Used to compare continuous variables (age, height, weight) between subsets.
 * **Pearson chi-squared test**: Used to compare categorical variables (sex) between subsets.
+
+Descriptive statistics for age, height, and weight were determined based on normality assessment. Normally distributed variables are presented as mean ± standard deviation (SD), while non-normally distributed variables are presented as median and interquartile range (IQR). Note that when applying this pipeline to a different dataset, the appropriate descriptive statistic should be reassessed based on the normality of that dataset.
 
 ---
 
@@ -213,7 +233,7 @@ The model performance is assessed using the following measures:
 5. Check the normality via `statistical_analysis.ipynb` (see [Statistical analysis](#statistical-analysis)).
 6. Run the APCONet model (see [APCONet model](#apconet-model)). 
  
-> **Note:** Adjust file paths and time handling when using data from a different hospital or monitoring system.
+> **Note:** Adjust file paths, descriptive statistics and time handling when using data from a different hospital or monitoring system.
 
 ---
 
