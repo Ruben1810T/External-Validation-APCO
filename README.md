@@ -193,7 +193,7 @@ The preprocessing steps are based on the filtering strategy introduced by Van Mi
 * ```filter_abp_dip```: Removes segments with NIBP measurements that disturb the ABP waveform. 
 * ```filter_physiological```: Removes segments where ABP values are <25 or >250 mmHg or where SV values are <20 or >200 mL.
 * ```filter_heartrate```: Removes segments where the HR is <30 or >180 bpm.
-* ```filter_pulse_pressure```: Removes segments where the mean pulse pressure is <20 mmHg
+* ```filter_pulse_pressure```: Removes segments where the mean pulse pressure is <20 mmHg.
 * ```delete_segments```: Applies the collected removal mask to all arrays.
 * ```save_data```: Saves the data to .npy files. 
 * ```process_patient```: Runs the full pipeline for one patient.
