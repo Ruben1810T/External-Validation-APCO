@@ -145,7 +145,7 @@ Settings are loaded from a `vars.env` file in the project directory. Create this
 DATA_PATH=path/to/data
 STAT_PATH=path/to/results
 
-DEMOGRAPHICS=path/to/demographic/data
+DEMOGRAPHICS=demographic_file_name
 
 # Signal
 SAMPLE_LENGTH=2000 #20 seconden * 100hz ; 2000 samples
@@ -171,7 +171,7 @@ NPY_SAVE=True
 |---|---|
 | `DATA_PATH` | Path to the directory containing vital and Hemosphere data |
 | `DEMOGRAPHICS` | Path to the directory containing folders with demographic data |
-| `STAT_PATH` | Path to statistical analysis |
+| `STAT_PATH` | Path to results for statistical analysis |
 | `SAMPLE_LENGTH` | ABP segment length in samples (2000 = 20 s at 100 Hz) |
 | `SAMPLING_RATE` | Sampling interval in seconds (0.01 s = 100 Hz) |
 | `FILTER_*` | Enable or disable individual filter steps |
