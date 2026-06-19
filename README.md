@@ -138,28 +138,29 @@ Processed `.npy` files are stored in a separate directory for each patient, wher
 
 ---
 ## Configuration
- 
 Settings are loaded from a `vars.env` file in the project directory. Create this file based on the structure below: 
  
 ```env
 # Paths
 DATA_PATH=path/to/data
+STAT_PATH=path/to/results
+
 DEMOGRAPHICS=path/to/demographic/data
-STAT_PATH=?
- 
+
 # Signal
-SAMPLE_LENGTH=2000
-SAMPLING_RATE=0.01
+SAMPLE_LENGTH=2000 #20 seconden * 100hz ; 2000 samples
+SAMPLING_RATE=0.01 #100Hz sampling rate
+
+#Plot settings
+PLOT_LINKING = False
+PLOT_HR = False
+PLOT_PP = False
+PLOT_FINAL = True
  
-# Filtering
-FILTER_HR=True
-FILTER_PP=True
- 
-# Visualisation
-PLOT_LINKING=False
-PLOT_HR=False
-PLOT_PP=False
-PLOT_FINAL=False
+# Filtering settings
+FILTER_BEGIN = False
+FILTER_HR = True 
+FILTER_PP = True 
 
 # Save as npy files
 NPY_SAVE=True
@@ -170,7 +171,7 @@ NPY_SAVE=True
 |---|---|
 | `DATA_PATH` | Path to the directory containing vital and Hemosphere data |
 | `DEMOGRAPHICS` | Path to the directory containing folders with demographic data |
-| `STAT_PATH` | ? |
+| `STAT_PATH` | Path to statistical analysis |
 | `SAMPLE_LENGTH` | ABP segment length in samples (2000 = 20 s at 100 Hz) |
 | `SAMPLING_RATE` | Sampling interval in seconds (0.01 s = 100 Hz) |
 | `FILTER_*` | Enable or disable individual filter steps |
