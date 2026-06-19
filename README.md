@@ -158,7 +158,7 @@ PLOT_PP = False
 PLOT_FINAL = True
  
 # Filtering settings
-FILTER_BEGIN = False
+FILTER_BEGIN = True
 FILTER_HR = True 
 FILTER_PP = True 
 
