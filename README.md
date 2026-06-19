@@ -13,7 +13,7 @@ APCONet is an open-source machine learning model developed by Yang et al., train
 > Code adjustments made by:
 > * [Roy van Mierlo](https://research.tue.nl/en/persons/roy-van-mierlo/) (TU/e, the Netherlands)
 
-> External validation done by:
+> External validation and further fine-tuning done by:
 > * Lucas Halman (UT, [l.m.halman@student.utwente.nl](mailto:l.m.halman@student.utwente.nl))
 > * Nienke Rietdijk (UT, [n.e.rietdijk@student.utwente.nl](mailto:n.e.rietdijk@student.utwente.nl))
 > * Ruben Tielen (UT, [r.g.tielen@student.utwente.nl](mailto:r.g.tielen@student.utwente.nl))
@@ -215,7 +215,7 @@ Descriptive statistics for age, height, and weight were determined based on norm
 ---
 
 ## APCONet model
-The model created by Yang et al. was used for external validation. This model was created with the code from Van Mierlo and can be downloaded via the [APCONet repository](https://github.com/Computational-Biology-TUe/APCONet). After external validation, the model was further finetuned on the MST dataset. The finetuned model can be found in this repository under `AF-07`. 
+The model created by Yang et al. was used for external validation. This model was created with the code from Van Mierlo and can be downloaded via the [APCONet repository](https://github.com/Computational-Biology-TUe/APCONet). After external validation, the model was further fine-tuned on the MST dataset. The fine-tuned model can be found in this repository under `AF-07`. 
 
 The model performance is assessed using the following measures:
 
