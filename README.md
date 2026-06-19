@@ -215,7 +215,7 @@ Descriptive statistics for age, height, and weight were determined based on norm
 ---
 
 ## APCONet model
-The model created by Yang et al. was used for external validation. This model was created with the code from Van Mierlo and can be downloaded via the [APCONet repository](https://github.com/Computational-Biology-TUe/APCONet). After external validation, the model was further finetuned on the MST dataset. The finetuned model can be found in this repository under `AF-07`.
+The model created by Yang et al. was used for external validation. This model was created with the code from Van Mierlo and can be downloaded via the [APCONet repository](https://github.com/Computational-Biology-TUe/APCONet). After external validation, the model was further finetuned on the MST dataset. The finetuned model can be found in this repository under `AF-07`. 
 
 The model performance is assessed using the following measures:
 
@@ -224,6 +224,8 @@ The model performance is assessed using the following measures:
 * **Pearson and Spearman correlation**: Correlation between APCONet SV estimates and FloTrac reference measurements.
 * **Bland-Altman analysis**: Agreement between APCONet and FloTrac over the full range of measurements, reported as bias and limits of agreement (±SD).
 * **Four-quadrant plot**: Trend analysis based on concordance rate of percentage changes in SV between APCONet and FloTrac. A concordance rate of >90% indicates reliable trending ability.
+
+The code `documentstat.ipynb` is used to process the model’s output.
 
 ---
 
